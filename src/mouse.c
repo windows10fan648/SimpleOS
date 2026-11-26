@@ -100,6 +100,7 @@ void print_mouse_info() {
 }
 
 void mouse_handler(REGISTERS *r) {
+    (void)r;
     static uint8 mouse_cycle = 0;
     static char mouse_byte[3];
     bitmap_draw_char('X', prev_x, prev_y, vbe_rgb(0,0,0));
@@ -131,7 +132,7 @@ void mouse_handler(REGISTERS *r) {
             prev_y = g_mouse_y_pos;
             for(int i = 0; i < MOUSE_size_x; i++){
                 for(int w = 0; w < MOUSE_size_y; w++){
-                    uint32 prev_color = vbe_getpixel(prev_x + i, prev_y + w);
+                    (void)vbe_getpixel(prev_x + i, prev_y + w);
                     vbe_putpixel(prev_x + i, prev_y + w, VBE_RGB(255, 255, 255));
                 }
             }

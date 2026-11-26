@@ -1,6 +1,7 @@
 #include "string.h"
 #include "types.h"
 #include "console.h"
+#include "kheap.h"
 
 
 #define MEMORY_INDEX_BASE_SIZE 10000
@@ -166,8 +167,7 @@ void itoa(char *buf, int base, int d) {
 
 void * malloc(int nbytes)
 {
-	char variable[nbytes];
-	return &variable;
+	return kmalloc(nbytes);
 }
 
 int str_to_int(char* ch)
@@ -196,7 +196,7 @@ int val(char c)
 // to decimal
 int toDeci(int hex, int base)
 {
-    char *str;
+    char str[32];
     itoa(str, 16, hex);
     int len = strlen(str);
     int power = 1; // Initialize power of base

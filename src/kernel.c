@@ -98,6 +98,7 @@ BOOL is_cat(char *b) {
 }
 
 void kmain(unsigned long magic, unsigned long addr) {
+    (void)magic;
     MULTIBOOT_INFO *mboot_info;
     gdt_init();
     idt_init();

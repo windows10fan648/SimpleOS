@@ -68,7 +68,7 @@ uint32 fat_get_next_clu(uint32 curr_cluster){
 
 void fat_dir_ls(uint32 cluster){
 	uint8* cluster_buf = kmalloc(sizeof(*cluster_buf));
-	uint32 cluster_index = 0;
+	/* unused */
 	uint32 record_offset = 0;
 	uint32 LFN_index = 0;
 	char LFN[105]; //Buffer for long filenames
@@ -84,7 +84,7 @@ void fat_dir_ls(uint32 cluster){
 			break;//No more entries in this cluster
 		}
 		if(cluster_buf[record_offset] != 0xE5){
-			if(cluster_buf[record_offset + OFFSET_ATTRIB] & FLAG_LFN  == FLAG_LFN){// Is it a long filename entry?
+			if((cluster_buf[record_offset + OFFSET_ATTRIB] & FLAG_LFN) == FLAG_LFN){// Is it a long filename entry?
 				if((cluster_buf[record_offset] & 0xF0) == 0x40){
 					LFN_index = cluster_buf[record_offset] & 0x0F;
 				}
@@ -113,7 +113,7 @@ void fat_dir_ls(uint32 cluster){
 		record_offset += 32;
 		if(record_offset == g_fat_bpb->sectors_per_cluster * g_fat_bpb->bytes_per_sector){
 			uint32 next_cluster = fat_get_next_clu(cluster);
-			if(next_cluster == -1){
+			if(next_cluster == (uint32)-1){
 				break;
 			}
 			else {
@@ -125,7 +125,7 @@ void fat_dir_ls(uint32 cluster){
 
 uint32 fat_find_in_dir(char* fname, int cluster){
 	uint8* cluster_buf = load_cluster(cluster);
-	uint32 cluster_index = 0;
+	/* unused */
 	uint32 record_offset = 0;
 	uint32 LFN_index = 0;
 	char LFN[105]; //Buffer for long filenames
@@ -138,7 +138,7 @@ uint32 fat_find_in_dir(char* fname, int cluster){
 			break;//No more entries in this cluster
 		}
 		if(cluster_buf[record_offset] != 0xE5){
-			if(cluster_buf[record_offset + OFFSET_ATTRIB] &FLAG_LFN  == FLAG_LFN){// Is it a long filename entry?
+			if((cluster_buf[record_offset + OFFSET_ATTRIB] & FLAG_LFN) == FLAG_LFN){// Is it a long filename entry?
 				if((cluster_buf[record_offset] & 0xF0) == 0x40){
 					LFN_index = cluster_buf[record_offset] & 0x0F;
 				}
@@ -173,7 +173,7 @@ uint32 fat_find_in_dir(char* fname, int cluster){
 		record_offset += 32;
 		if(record_offset == g_fat_bpb->sectors_per_cluster * g_fat_bpb->bytes_per_sector){
 			uint32 next_cluster = fat_get_next_clu(cluster);
-			if(next_cluster == -1){
+			if(next_cluster == (uint32)-1){
 				break;
 			}
 			else {
@@ -185,7 +185,7 @@ uint32 fat_find_in_dir(char* fname, int cluster){
 }
 
 char* fat_get_filedata(uint32 cluster){
-	char* file_buf = load_cluster(cluster);
+	char* file_buf = (char*)load_cluster(cluster);
 	return file_buf;
 }
 

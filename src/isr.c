@@ -70,7 +70,7 @@ void isr_irq_handler(REGISTERS *reg) {
     pic8259_eoi(reg->int_no);
 }
 
-static void print_registers(REGISTERS *reg) {
+__attribute__((unused)) static void print_registers(REGISTERS *reg) {
     printf("REGISTERS:\n");
     printf("err_code=%d\n", reg->err_code);
     printf("eax=0x%x, ebx=0x%x, ecx=0x%x, edx=0x%x\n", reg->eax, reg->ebx, reg->ecx, reg->edx);
