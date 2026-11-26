@@ -12,8 +12,8 @@
 #define DRIVE 0 // We are using drive 0, the harddisk
 
 ext2_superblock* read_superblock(){
-    uint32* superblock = kmalloc(sizeof(*superblock));
-	ide_read_sectors(DRIVE, 1, 2, superblock);      
+    ext2_superblock* superblock = kmalloc(sizeof(*superblock));
+	ide_read_sectors(DRIVE, 1, 2, (uint32)superblock);      
 	return superblock;
 }
 
@@ -45,7 +45,7 @@ ext2_bgdt* parse_bgdt(uint32 block_group) {
 	printf("\nSTART BLOCK: %d", blk_group_start_block);
 	uint32 bgdt_start = blk_group_start_block + 2;
 	uint32 *bgdt_tmp = kmalloc(sizeof(*bgdt));
-	ide_read_sectors(DRIVE, 1, bgdt_start + 1, bgdt);
+	ide_read_sectors(DRIVE, 1, bgdt_start + 1, (uint32)bgdt);
 	//printf("\nBlock bitmap: %d\ninode bmap: %d\ninode table start: %d\nUnallocated Blocks: %d\nUnallocated Inodes: %d\nNumber of dirs: %d", bgdt->blk_bmap, bgdt->inode_bmap, bgdt->inode_table_start, bgdt->unalloc_blocks, bgdt->unalloc_inodes, bgdt->num_of_dirs);
 	return bgdt;
 }
@@ -92,7 +92,7 @@ ext2_inode* read_inode(uint32 inode) {
 	//printf("\nInode Table Start: %d", inode_table_start);
 	uint32 containing_block = (index * INODE_SIZE) / (1024 << sb->log_block_size);
 	uint32* inode_tmp = kmalloc(sizeof(*inode_tmp));
-	ide_read_sectors(DRIVE, 2, 2*(inode_table_start + containing_block), inode_tmp);
+	ide_read_sectors(DRIVE, 2, 2*(inode_table_start + containing_block), (uint32)inode_tmp);
 	ext2_inode* inode_info;
 	inode_info = (ext2_inode*)((uint32) inode_tmp + (index % (1024/INODE_SIZE))*INODE_SIZE);
 	printf("\nInode Type: %x\nInode UID: %x\nInode Block 0: %d\n", inode_info->type_perm, inode_info->user_id, inode_info->direct_block_pointers[0]);
@@ -144,7 +144,7 @@ int ext2_ls(uint32 inode_num){
 		uint32* dir = malloc(sizeof(*dir));
 		printf("Kmalloc 2");
 		uint32 datablock0 = inode->direct_block_pointers[0];
-		ide_read_sectors(DRIVE, 1, 2 * datablock0, dir);
+		ide_read_sectors(DRIVE, 1, 2 * datablock0, (uint32)dir);
 		int curr = 0;
 		int next;
 		int i;
@@ -173,7 +173,7 @@ uint32 ext2_find_in_dir(uint32 inode_num, char* dirent_name){
 	ext2_inode* inode = read_inode(inode_num);
 	uint32* dir = malloc(sizeof(dir));
 	uint32 datablock0 = inode->direct_block_pointers[0];
-	ide_read_sectors(DRIVE, 6, 2 * datablock0, dir);
+	ide_read_sectors(DRIVE, 6, 2 * datablock0, (uint32)dir);
 	for(int i; i < 128; i++){
 		printf("%x|", dir[i]);
 	}
@@ -204,7 +204,7 @@ char* ext2_get_filedata(uint32 inode_num){
 	ext2_inode* inode = read_inode(inode_num);
 	uint32* filedata = kmalloc(sizeof(filedata));
 	uint32 datablock0 = inode->direct_block_pointers[0];
-	ide_read_sectors(DRIVE, 1, 2 * datablock0, filedata);
+	ide_read_sectors(DRIVE, 1, 2 * datablock0, (uint32)filedata);
 	getdata(file_buf, 1024, 0, filedata);
 	//printf("\n%s", file_buf);
 	return file_buf;
@@ -221,7 +221,7 @@ uint32 ext2_path_to_inode(char* path){
 	int start = 0;
 	int end = 0;
 	printf("\nStrcmp");
-	if(!strcmp(path, '/'))
+	if(!strcmp(path, "/"))
 		return 2;
 	printf("\nStrcmp done");
 	while(path[i]){
@@ -274,7 +274,7 @@ void rewrite_bgds(uint32 group, ext2_bgdt new_bgdt){
 	memcpy(data, &new_bgdt, sizeof(new_bgdt));
 	uint32 blk_group_start_block = (group - 1) * sb->blocks_per_group + 1;
 	uint32 bgdt_start = blk_group_start_block + 2;
-	ide_write_sectors(DRIVE, 1, bgdt_start + 1, data);
+	ide_write_sectors(DRIVE, 1, bgdt_start + 1, (uint32)data);
 }
 
 void ext2_init(){

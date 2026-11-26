@@ -122,4 +122,7 @@ void kmain(unsigned long magic, unsigned long addr) {
     ata_init();
     fat_init();
     printf("\nEND OF KERNEL");
+    for (;;) {
+        __asm__ __volatile__("hlt");
+    }
 }

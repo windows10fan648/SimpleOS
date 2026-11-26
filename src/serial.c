@@ -1,4 +1,13 @@
-include "io_ports.h"
+#include "io_ports.h"
+
+#define SERIAL_COM1_DATA_REGISTER_PORT 0x3F8
+#define SERIAL_COM1_INTERRUPT_ENABLE_PORT 0x3F9
+#define SERIAL_COM1_INT_ID_FIFO_CTRL_PORT 0x3FA
+#define SERIAL_COM1_LINE_CTRL_REG_PORT 0x3FB
+#define SERIAL_COM1_MODEM_CTRL_REG_PORT 0x3FC
+#define SERIAL_COM1_LINE_STATUS_REG_PORT 0x3FD
+#define SERIAL_COM1_INTERRUPT_DIVISOR_LOW 0x3F8
+#define SERIAL_COM1_INTERRUPT_DIVISOR_HIGH 0x3F9
 
 void serial_init()
 {
@@ -20,7 +29,7 @@ void serial_init()
     outportb(
         SERIAL_COM1_INT_ID_FIFO_CTRL_PORT,
         0xC7); // Enable FIFO, clear them, with 14-byte threshold
-    out_byte(
+    outportb(
         SERIAL_COM1_MODEM_CTRL_REG_PORT,
         0x0B); // IRQs enabled, RTS/DSR set
 }

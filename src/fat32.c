@@ -28,19 +28,21 @@ uint32 FAT_ClusterToLba(uint32 cluster)
 }
 
 void FAT_readfat(uint32 lba_index){
-	ide_read_sectors(DRIVE, FAT_CACHE_SIZE, g_fat_bpb->reserved_sector_count + lba_index, g_FAT_Cache);
+	ide_read_sectors(DRIVE, FAT_CACHE_SIZE, g_fat_bpb->reserved_sector_count + lba_index, (uint32)g_FAT_Cache);
 }
 
 fat_bpb* fat_read_bpb(){
-	uint32* bpb = kmalloc(sizeof(fat_bpb));
-	ide_read_sectors(DRIVE, 1, 6, bpb);
+	fat_bpb* bpb = kmalloc(sizeof(fat_bpb));
+	ide_read_sectors(DRIVE, 1, 0, (uint32)bpb);
 	return bpb;
 }
 
 uint8* load_cluster(int clu){
-	uint8* cluster_buf = kmalloc(sizeof(*cluster_buf));
+	uint32 cluster_size = g_fat_bpb->sectors_per_cluster * g_fat_bpb->bytes_per_sector;
+	if (cluster_size == 0) cluster_size = 512;
+	uint8* cluster_buf = kmalloc(cluster_size);
 	uint32 LBA = FAT_ClusterToLba(clu);
-	ide_read_sectors(DRIVE, g_fat_bpb->sectors_per_cluster, LBA, (uint8*)cluster_buf);
+	ide_read_sectors(DRIVE, g_fat_bpb->sectors_per_cluster, LBA, (uint32)cluster_buf);
 	return cluster_buf;
 }
 
@@ -262,7 +264,15 @@ void fat_init(){
 	printf("\nData LBA: %d", g_DataSectionLBA);
 	printf("\nRoot Cluster: %d", g_fat_bpb->root_cluster);
 	printf("\nRoot LBA: %d\n", root_dir_lba);
-	ide_read_sectors(DRIVE, 1, root_dir_lba, g_root_buf);
-	char* file_buf = fat_read_file("/test/subdir/hello.txt");
-	printf("\nFile buf: %s\n", file_buf);
+	if (g_bytes_per_sector == 0) g_bytes_per_sector = 512;
+	g_root_buf = kmalloc(g_fat_bpb->sectors_per_cluster * g_bytes_per_sector);
+	if (g_root_buf == NULL) g_root_buf = kmalloc(g_bytes_per_sector);
+	ide_read_sectors(DRIVE, 1, root_dir_lba, (uint32)g_root_buf);
+	uint32 file_clu = fat_path_to_cluster("/test/subdir/hello.txt");
+	if (file_clu >= 2) {
+		char* file_buf = fat_get_filedata(file_clu);
+		if (file_buf != NULL) printf("\nFile buf: %s\n", file_buf);
+	} else {
+		printf("\nCould not resolve file cluster\n");
+	}
 }
