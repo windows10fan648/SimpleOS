@@ -32,7 +32,7 @@ void FAT_readfat(uint32 lba_index){
 }
 
 fat_bpb* fat_read_bpb(){
-	fat_bpb* bpb = kmalloc(sizeof(fat_bpb));
+	fat_bpb* bpb = kmalloc(512);
 	ide_read_sectors(DRIVE, 1, 0, (uint32)bpb);
 	return bpb;
 }

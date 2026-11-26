@@ -25,4 +25,14 @@ if grep -Eiq 'warning|error' "$log"; then
     exit 1
 fi
 
+if [[ ! -f out/SimpleOS.bin ]]; then
+    echo "MISSING out/SimpleOS.bin"
+    exit 1
+fi
+
+if [[ ! -f out/SimpleOS.iso ]]; then
+    echo "MISSING out/SimpleOS.iso"
+    exit 1
+fi
+
 echo "BUILD PASSED: no warnings or errors"

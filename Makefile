@@ -60,7 +60,10 @@ OBJECTS=$(ASM_OBJ)/entry.o $(ASM_OBJ)/load_gdt.o\
 
 
 
-all: $(OBJECTS)
+dirs:
+	@$(MKDIR) $(OBJ) $(ASM_OBJ) $(ISO_DIR)/boot/grub
+
+all: dirs $(OBJECTS)
 	@printf "[ linking... ]\n"
 	$(LD) $(LD_FLAGS) -o $(TARGET) $(OBJECTS)
 	grub-file --is-x86-multiboot $(TARGET)
@@ -70,7 +73,6 @@ all: $(OBJECTS)
 	$(CP) $(TARGET) $(ISO_DIR)/boot/
 	$(CP) $(CONFIG)/grub.cfg $(ISO_DIR)/boot/grub/
 	$(GRUB) -o $(TARGET_ISO) $(ISO_DIR)
-	rm -f $(TARGET)
 
 $(ASM_OBJ)/entry.o : $(ASM_SRC)/entry.asm
 	@printf "[ $(ASM_SRC)/entry.asm ]\n"

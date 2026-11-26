@@ -135,11 +135,11 @@ int ext2_ls(uint32 inode_num){
 		return ret;
 	}
 	else {
-		char **return_names = kmalloc(sizeof(**return_names));
+		char **return_names = kmalloc(128 * sizeof(char*));
 		printf("Kmalloc 1");
 		ext2_inode *inode = read_inode(inode_num);
 		printf("DONE");
-		uint32* dir = malloc(sizeof(*dir));
+		uint32* dir = kmalloc(512);
 		printf("Kmalloc 2");
 		uint32 datablock0 = inode->direct_block_pointers[0];
 		ide_read_sectors(DRIVE, 1, 2 * datablock0, (uint32)dir);
@@ -169,7 +169,7 @@ int ext2_ls(uint32 inode_num){
 uint32 ext2_find_in_dir(uint32 inode_num, char* dirent_name){
 	uint32 return_inode = FILE_NOT_FOUND;
 	ext2_inode* inode = read_inode(inode_num);
-	uint32* dir = malloc(sizeof(dir));
+	uint32* dir = kmalloc(6 * 512);
 	uint32 datablock0 = inode->direct_block_pointers[0];
 	ide_read_sectors(DRIVE, 6, 2 * datablock0, (uint32)dir);
 	for(int i = 0; i < 128; i++){
@@ -197,9 +197,9 @@ uint32 ext2_find_in_dir(uint32 inode_num, char* dirent_name){
 }
 
 char* ext2_get_filedata(uint32 inode_num){
-	char* file_buf = kmalloc(sizeof(*file_buf));
+	char* file_buf = kmalloc(1024);
 	ext2_inode* inode = read_inode(inode_num);
-	uint32* filedata = kmalloc(sizeof(filedata));
+	uint32* filedata = kmalloc(512);
 	uint32 datablock0 = inode->direct_block_pointers[0];
 	ide_read_sectors(DRIVE, 1, 2 * datablock0, (uint32)filedata);
 	getdata(file_buf, 1024, 0, filedata);
