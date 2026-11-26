@@ -56,9 +56,9 @@ OBJECTS=$(ASM_OBJ)/entry.o $(ASM_OBJ)/load_gdt.o\
 		$(OBJ)/vesa.o\
 		$(OBJ)/bitmap.o\
 		$(OBJ)/panic.o\
-		$(OBJ)/fat32.o\
+		$(OBJ)/fat32.o
 
-
+$(OBJECTS): | dirs
 
 dirs:
 	@$(MKDIR) $(OBJ) $(ASM_OBJ) $(ISO_DIR)/boot/grub
