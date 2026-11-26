@@ -20,17 +20,17 @@ fi
 
 cat "$log"
 
-if grep -Eiq 'warning|error' "$log"; then
+if grep -Eiq '(^|[[:space:]])(warning|error):' "$log"; then
     echo "BUILD CONTAINS WARNINGS OR ERRORS"
     exit 1
 fi
 
-if [[ ! -f out/SimpleOS.bin ]]; then
+if [[ ! -s out/SimpleOS.bin ]]; then
     echo "MISSING out/SimpleOS.bin"
     exit 1
 fi
 
-if [[ ! -f out/SimpleOS.iso ]]; then
+if [[ ! -s out/SimpleOS.iso ]]; then
     echo "MISSING out/SimpleOS.iso"
     exit 1
 fi
