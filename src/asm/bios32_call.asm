@@ -152,7 +152,7 @@ __padding:
     db 0x0
 bios32_gdt_entries:
     ; 8 gdt entries
-    resb 64
+    times 64 db 0
 bios32_gdt_ptr:
     dd 0x00000000
     dd 0x00000000
@@ -160,7 +160,7 @@ bios32_idt_ptr:
     dd 0x00000000
     dd 0x00000000
 bios32_in_reg16_ptr:
-    resw 14
+    times 14 dw 0
 bios32_out_reg16_ptr:
     dd 0xaaaaaaaa
     dd 0xaaaaaaaa
