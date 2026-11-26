@@ -221,8 +221,12 @@ $(OBJ)/fat32.o : $(SRC)/fat32.c
 
 .PHONY: all dirs run clean
 
-run:
-	$(QEMU) $(QEMU_FLAGS)
+run: all
+	@if [ -f fat32.img ]; then \
+		$(QEMU) -boot d -cdrom $(TARGET_ISO) -drive file=fat32.img,format=raw; \
+	else \
+		$(QEMU) -boot d -cdrom $(TARGET_ISO); \
+	fi
 
 clean:
 	rm -f $(OBJ)/*.o
