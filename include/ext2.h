@@ -89,7 +89,7 @@ typedef struct ext2_dirent
 	uint8* name;
 } ext2_dirent;
 
-ext2_superblock* sb;
+extern ext2_superblock* sb;
 
 ext2_superblock* read_superblock();
 void ext2_init();

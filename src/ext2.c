@@ -11,6 +11,8 @@
 
 #define DRIVE 0 // We are using drive 0, the harddisk
 
+ext2_superblock* sb;
+
 ext2_superblock* read_superblock(){
     ext2_superblock* superblock = kmalloc(sizeof(*superblock));
 	ide_read_sectors(DRIVE, 1, 2, (uint32)superblock);      

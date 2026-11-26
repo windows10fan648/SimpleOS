@@ -23,14 +23,12 @@ DEFINES=
 
 # qemu
 QEMU= qemu-system-i386
-QEMU_FLAGS=  -boot d -cdrom out/SimpleOS.iso -drive file=fat32.img,format=raw
-
 # assembler flags
 ASM_FLAGS = -f elf32
 # compiler flags
 CC_FLAGS = $(INCLUDE) $(DEFINES) -m32 -std=gnu99 -ffreestanding -Wall -Wextra -fno-stack-protector 
 # linker flags, for linker add linker.ld file too
-LD_FLAGS = -m elf_i386 -T $(CONFIG)/linker.ld -nostdlib --allow-multiple-definition
+LD_FLAGS = -m elf_i386 -T $(CONFIG)/linker.ld -nostdlib
 
 # target file to create in linking
 TARGET=$(OUT)/SimpleOS.bin
