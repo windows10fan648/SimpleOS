@@ -192,7 +192,6 @@ uint32 ext2_find_in_dir(uint32 inode_num, char* dirent_name){
 			return_inode = curr_dirent.inode;
 		}
 		curr = curr + next;
-		i++;
 	}
 	return return_inode;
 }
