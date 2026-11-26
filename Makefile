@@ -61,7 +61,7 @@ $(OBJECTS): | dirs
 dirs:
 	@$(MKDIR) $(OBJ) $(ASM_OBJ) $(ISO_DIR)/boot/grub
 
-all: dirs $(OBJECTS)
+all: $(OBJECTS)
 	@printf "[ linking... ]\n"
 	$(LD) $(LD_FLAGS) -o $(TARGET) $(OBJECTS)
 	grub-file --is-x86-multiboot $(TARGET)
