@@ -1,2 +1,13 @@
-ext2.img
+# Build artifacts
+obj/
+out/
+*.o
+*.bin
+*.iso
+
+# Disk images
+*.img
+
+# Editor/OS junk
+.DS_Store
 commit.txt
