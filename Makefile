@@ -219,6 +219,8 @@ $(OBJ)/fat32.o : $(SRC)/fat32.c
 	$(CC) $(CC_FLAGS) -c $(SRC)/fat32.c -o $(OBJ)/fat32.o
 	@printf "\n"
 
+.PHONY: all dirs run clean
+
 run:
 	$(QEMU) $(QEMU_FLAGS)
 
